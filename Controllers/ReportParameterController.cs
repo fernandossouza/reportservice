@@ -56,5 +56,26 @@ namespace reportservice.Controllers
             }
         }
 
+        [HttpGet("Date")]
+        public async Task<IActionResult> GetDate([FromQuery]int thingId,long startDate, long endDate)
+        {
+            try
+            {
+                Report report;
+                string erro;
+                (report,erro) = await _reportParameterService.GetReportPerDate(thingId,startDate,endDate);
+
+                if(report == null)
+                    return StatusCode(500,erro);
+
+                return Ok(report);
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500,ex.Message);
+            }
+        }
+
+
     }
 }

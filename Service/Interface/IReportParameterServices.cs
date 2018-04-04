@@ -8,5 +8,6 @@ namespace reportservice.Service.Interface
     {
          Task<(Report,string)> GetReportPerProductionOrderId(int productionOrderId,int thingId);
          Task<(Report,string)> GetReportPerRecipeCode(string recipeCode, int thingId, long startDate, long endDate);
+         Task<(Report,string)> GetReportPerDate(int thingId, long startDate, long endDate);
     }
 }

@@ -72,6 +72,34 @@ namespace reportservice.Service
             return (reportReturn,string.Empty);
         }
 
+        public async Task<(Report,string)> GetReportPerDate(int thingId, long startDate, long endDate)
+        {
+            Report reportReturn = new Report();
+            reportReturn.tags = new List<Tag>();
+
+            if(endDate <= 0)
+                endDate = 999999999999999999;
+
+            var productionOrderIds = await _otherAPIService.GetHistStateProductionOrderList("active",startDate,endDate);
+
+            if(productionOrderIds.Count()==0)
+                return (null,"Not found ProductionOrders");
+
+            foreach(var productionOrderId in productionOrderIds)
+            {
+                var productionOrder = await _otherAPIService.GetProductionOrderPerId(productionOrderId);
+
+                 var (report,stringErro) = await AddReportPeriod(reportReturn,productionOrder.productionOrderId,thingId);
+
+                    if(report == null)
+                        return (null,stringErro);
+                    
+                    reportReturn = report;
+            }
+                        
+            return (reportReturn,string.Empty);
+        }
+
         public async Task<(Report,string)> GetReportPerRecipeCode(string recipeCode, int thingId, long startDate, long endDate)
         {
             Report reportReturn = new Report();
