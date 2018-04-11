@@ -1,81 +1,59 @@
 using System;
-using Microsoft.AspNetCore.Mvc;
-using reportservice.Service.Interface;
-using reportservice.Model;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using reportservice.Model;
+using reportservice.Service.Interface;
 
-namespace reportservice.Controllers
-{
-    [Route("api/[controller]")]
-    public class ReportParameterController : Controller
-    {
+namespace reportservice.Controllers {
+    [Route ("api/[controller]")]
+    public class ReportParameterController : Controller {
         private readonly IReportParameterServices _reportParameterService;
 
-        public ReportParameterController (IReportParameterServices reportParameterService)
-        {
+        public ReportParameterController (IReportParameterServices reportParameterService) {
             _reportParameterService = reportParameterService;
         }
-        
-        [HttpGet("ProductionOrder/{productionOrderId}")]
-        public async Task<IActionResult> GetProductionOrder(int productionOrderId, [FromQuery]int thingId)
-        {
-            try
-            {
-                Report report;
-                string erro;
-                (report,erro) = await _reportParameterService.GetReportPerProductionOrderId(productionOrderId,thingId);
 
-                if(report == null)
-                    return StatusCode(500,erro);
+        [HttpGet ("ProductionOrder/{productionOrderId}")]
+        public async Task<IActionResult> GetProductionOrder (int productionOrderId, [FromQuery] int thingId) {
 
-                return Ok(report);
-            }
-            catch(Exception ex)
-            {
-                return StatusCode(500,ex.Message);
-            }
+            Report report;
+            string erro;
+            (report, erro) = await _reportParameterService.GetReportPerProductionOrderId (productionOrderId, thingId);
+
+            if (report == null)
+                return StatusCode (500, erro);
+
+            return Ok (report);
+
         }
 
-        [HttpGet("RecipeCode/{recipeCode}")]
-        public async Task<IActionResult> GetRecipeCode(string recipeCode, [FromQuery]int thingId,long startDate, long endDate)
-        {
-            try
-            {
-                Report report;
-                string erro;
-                (report,erro) = await _reportParameterService.GetReportPerRecipeCode(recipeCode,thingId,startDate,endDate);
+        [HttpGet ("RecipeCode/{recipeCode}")]
+        public async Task<IActionResult> GetRecipeCode (string recipeCode, [FromQuery] int thingId, long startDate, long endDate) {
 
-                if(report == null)
-                    return StatusCode(500,erro);
+            Report report;
+            string erro;
+            (report, erro) = await _reportParameterService.GetReportPerRecipeCode (recipeCode, thingId, startDate, endDate);
 
-                return Ok(report);
-            }
-            catch(Exception ex)
-            {
-                return StatusCode(500,ex.Message);
-            }
+            if (report == null)
+                return StatusCode (500, erro);
+
+            return Ok (report);
+
         }
 
-        [HttpGet("Date")]
-        public async Task<IActionResult> GetDate([FromQuery]int thingId,long startDate, long endDate)
-        {
-            try
-            {
-                Report report;
-                string erro;
-                (report,erro) = await _reportParameterService.GetReportPerDate(thingId,startDate,endDate);
+        [HttpGet ("Date")]
+        public async Task<IActionResult> GetDate ([FromQuery] int thingId, long startDate, long endDate) {
 
-                if(report == null)
-                    return StatusCode(500,erro);
+            Report report;
+            string erro;
+            (report, erro) = await _reportParameterService.GetReportPerDate (thingId, startDate, endDate);
 
-                return Ok(report);
-            }
-            catch(Exception ex)
-            {
-                return StatusCode(500,ex.Message);
-            }
+            if (report == null)
+                return StatusCode (500, erro);
+
+            return Ok (report);
+
         }
-
 
     }
 }
