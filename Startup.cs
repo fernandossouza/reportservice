@@ -37,6 +37,9 @@ namespace reportservice
 
             services.AddTransient<IOtherAPIService,OtherAPIService>();
             services.AddTransient<IReportParameterServices,ReportParameterService>();
+            services.AddTransient<IThingService,ThingService>();
+            services.AddTransient<IProductionOrderService,ProductionOrderService>();
+            services.AddTransient<IRecipeService,RecipeService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

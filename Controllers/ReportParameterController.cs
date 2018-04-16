@@ -26,7 +26,12 @@ namespace reportservice.Controllers
                 (report,erro) = await _reportParameterService.GetReportPerProductionOrderId(productionOrderId,thingId);
 
                 if(report == null)
-                    return StatusCode(500,erro);
+                {
+                    if(erro.ToLower().IndexOf("not found")>0)
+                        return NotFound();
+                    else
+                        return StatusCode(500,erro);
+                }
 
                 return Ok(report);
             }
@@ -46,7 +51,12 @@ namespace reportservice.Controllers
                 (report,erro) = await _reportParameterService.GetReportPerRecipeCode(recipeCode,thingId,startDate,endDate);
 
                 if(report == null)
-                    return StatusCode(500,erro);
+                {
+                    if(erro.ToLower().IndexOf("not found")>0)
+                        return NotFound();
+                    else
+                        return StatusCode(500,erro);
+                }
 
                 return Ok(report);
             }
@@ -66,7 +76,12 @@ namespace reportservice.Controllers
                 (report,erro) = await _reportParameterService.GetReportPerDate(thingId,startDate,endDate);
 
                 if(report == null)
-                    return StatusCode(500,erro);
+                {
+                    if(erro.ToLower().IndexOf("not found")>0)
+                        return NotFound();
+                    else
+                        return StatusCode(500,erro);
+                }
 
                 return Ok(report);
             }

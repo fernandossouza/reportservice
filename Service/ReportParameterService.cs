@@ -80,22 +80,27 @@ namespace reportservice.Service
             if(endDate <= 0)
                 endDate = 999999999999999999;
 
-            var productionOrderIds = await _otherAPIService.GetHistStateProductionOrderList("active",startDate,endDate);
+            //var productionOrderIds = await _otherAPIService.GetHistStateProductionOrderList("active",startDate,endDate);
+            var report = await _otherAPIService.GetReportAPI(thingId,startDate,endDate);
+            // if(productionOrderIds == null || productionOrderIds.Count()==0)
+            //     return (null,"Not found ProductionOrders");
 
-            if(productionOrderIds.Count()==0)
-                return (null,"Not found ProductionOrders");
+            if(report == null)
+                return (null,"Not found");
 
-            foreach(var productionOrderId in productionOrderIds)
-            {
-                var productionOrder = await _otherAPIService.GetProductionOrderPerId(productionOrderId);
+            // foreach(var productionOrderId in productionOrderIds)
+            // {
+            //     var productionOrder = await _otherAPIService.GetProductionOrderPerId(productionOrderId);
 
-                 var (report,stringErro) = await AddReportPeriod(reportReturn,productionOrder.productionOrderId,thingId);
+            //      var (report,stringErro) = await AddReportPeriod(reportReturn,productionOrder.productionOrderId,thingId);
 
-                    if(report == null)
-                        return (null,stringErro);
+            //         if(report == null)
+            //             return (null,stringErro);
                     
-                    reportReturn = report;
-            }
+            //         reportReturn = report;
+            // }
+
+            reportReturn = report;
 
             return (reportReturn,string.Empty);
         }
