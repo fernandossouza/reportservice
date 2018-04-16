@@ -27,7 +27,7 @@ namespace reportservice.Controllers
 
                 if(report == null)
                 {
-                    if(erro.ToLower().IndexOf("not found")>0)
+                    if(erro.ToLower().IndexOf("not found")>=0)
                         return NotFound();
                     else
                         return StatusCode(500,erro);
@@ -52,7 +52,7 @@ namespace reportservice.Controllers
 
                 if(report == null)
                 {
-                    if(erro.ToLower().IndexOf("not found")>0)
+                    if(erro.ToLower().IndexOf("not found")>=0)
                         return NotFound();
                     else
                         return StatusCode(500,erro);
@@ -77,7 +77,7 @@ namespace reportservice.Controllers
 
                 if(report == null)
                 {
-                    if(erro.ToLower().IndexOf("not found")>0)
+                    if(erro.ToLower().IndexOf("not found")>=0)
                         return NotFound();
                     else
                         return StatusCode(500,erro);

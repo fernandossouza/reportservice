@@ -32,11 +32,14 @@ namespace reportservice.Controllers
              _recipeService = recipeService;
          }
 
-        [HttpGet("gateway/things/{id}")]
+        [HttpGet("gateway/things/")]
         [Produces("application/json")]
-        public async Task<IActionResult> GetThing(int id)
+        public async Task<IActionResult> GetThing([FromQuery]int? startat, [FromQuery]int? quantity,
+            [FromQuery]string fieldFilter =null, [FromQuery]string fieldValue=null,
+            [FromQuery]string orderField=null, [FromQuery]string order=null)
         {
-            var (thing, resultCode) = await _thingService.getThing(id);
+            var (thing, resultCode) = await _thingService.getThing(startat,quantity,
+           fieldFilter, fieldValue,orderField,order);
             switch (resultCode)
             {
                 case HttpStatusCode.OK:
@@ -47,11 +50,14 @@ namespace reportservice.Controllers
             return StatusCode(StatusCodes.Status500InternalServerError);
         }
 
-        [HttpGet("gateway/productionorder/{id}")]
+        [HttpGet("gateway/productionorder/")]
         [Produces("application/json")]
-        public async Task<IActionResult> GetProductionOrder(int id)
+        public async Task<IActionResult> GetProductionOrder([FromQuery]int? startat, [FromQuery]int? quantity,
+            [FromQuery]string fieldFilter =null, [FromQuery]string fieldValue=null,
+            [FromQuery]string orderField=null, [FromQuery]string order=null)
         {
-            var (productionOrder, resultCode) = await _productionOrderService.getProductionOrder(id);
+            var (productionOrder, resultCode) = await _productionOrderService.getProductionOrder(startat,quantity,
+           fieldFilter, fieldValue,orderField,order);
             switch (resultCode)
             {
                 case HttpStatusCode.OK:
@@ -63,11 +69,14 @@ namespace reportservice.Controllers
         }
 
 
-        [HttpGet("gateway/recipe/{id}")]
+        [HttpGet("gateway/recipe/")]
         [Produces("application/json")]
-        public async Task<IActionResult> GetRecipe(int id)
+        public async Task<IActionResult> GetRecipe([FromQuery]int? startat, [FromQuery]int? quantity,
+            [FromQuery]string fieldFilter =null, [FromQuery]string fieldValue=null,
+            [FromQuery]string orderField=null, [FromQuery]string order=null)
         {
-            var (recipe, resultCode) = await _recipeService.getRecipe(id);
+            var (recipe, resultCode) = await _recipeService.getRecipe(startat,quantity,
+           fieldFilter, fieldValue,orderField,order);
             switch (resultCode)
             {
                 case HttpStatusCode.OK:
