@@ -12,7 +12,6 @@ namespace reportservice.Controllers {
         public ReportParameterController (IReportParameterServices reportParameterService) {
             _reportParameterService = reportParameterService;
         }
-<<<<<<< HEAD
         
         [HttpGet("ProductionOrder/{productionOrderId}")]
         public async Task<IActionResult> GetProductionOrder(int productionOrderId, [FromQuery]int thingId)
@@ -87,50 +86,10 @@ namespace reportservice.Controllers {
             {
                 return StatusCode(500,ex.Message);
             }
-=======
-
-        [HttpGet ("ProductionOrder/{productionOrderId}")]
-        public async Task<IActionResult> GetProductionOrder (int productionOrderId, [FromQuery] int thingId) {
-
-            Report report;
-            string erro;
-            (report, erro) = await _reportParameterService.GetReportPerProductionOrderId (productionOrderId, thingId);
-
-            if (report == null)
-                return StatusCode (500, erro);
-
-            return Ok (report);
 
         }
 
-        [HttpGet ("RecipeCode/{recipeCode}")]
-        public async Task<IActionResult> GetRecipeCode (string recipeCode, [FromQuery] int thingId, long startDate, long endDate) {
-
-            Report report;
-            string erro;
-            (report, erro) = await _reportParameterService.GetReportPerRecipeCode (recipeCode, thingId, startDate, endDate);
-
-            if (report == null)
-                return StatusCode (500, erro);
-
-            return Ok (report);
-
->>>>>>> fc1909ece5a6cfba925e8316241478bf523092ab
-        }
-
-        [HttpGet ("Date")]
-        public async Task<IActionResult> GetDate ([FromQuery] int thingId, long startDate, long endDate) {
-
-            Report report;
-            string erro;
-            (report, erro) = await _reportParameterService.GetReportPerDate (thingId, startDate, endDate);
-
-            if (report == null)
-                return StatusCode (500, erro);
-
-            return Ok (report);
-
-        }
+      
 
     }
 }
