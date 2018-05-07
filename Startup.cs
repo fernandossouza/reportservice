@@ -28,16 +28,17 @@ namespace reportservice
         {
             services.AddMvc();
 
-            services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
-               {
-                   builder.AllowAnyOrigin()
-                          .AllowAnyMethod()
-                          .AllowAnyHeader();
-               }));
+            services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>  {
+                    builder.AllowAnyOrigin()
+                            .AllowAnyMethod()
+                            .AllowAnyHeader();
+                })
+            );
 
             services.AddTransient<IOtherAPIService,OtherAPIService>();
             services.AddTransient<IReportParameterServices,ReportParameterService>();
             services.AddTransient<IThingService,ThingService>();
+            services.AddTransient<IAlarmService,AlarmService>();
             services.AddTransient<IProductionOrderService,ProductionOrderService>();
             services.AddTransient<IRecipeService,RecipeService>();
         }

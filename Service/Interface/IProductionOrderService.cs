@@ -5,10 +5,8 @@ using reportservice.Model.ProductionOrder;
 
 namespace reportservice.Service.Interface
 {
-    public interface IProductionOrderService
-    {
-         Task<(List<ProductionOrder>, HttpStatusCode)> getProductionOrder(int? startat, int? quantity,
-            string fieldFilter=null, string fieldValue=null,
-            string orderField=null, string order=null);
+    public interface IProductionOrderService{
+        Task<(List<ProductionOrder>, HttpStatusCode)> getProductionOrder(int? startat, int? quantity,
+            string fieldFilter=null, string fieldValue=null,string orderField=null, string order=null);
     }
 }

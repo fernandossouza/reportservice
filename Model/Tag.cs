@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 
-namespace reportservice.Model
-{
-    public class Tag
-    {
+namespace reportservice.Model{
+    public class Tag{
         public string name{get;set;}
         public string color{get;set;}
         public string group{get;set;}
