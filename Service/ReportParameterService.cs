@@ -69,7 +69,7 @@ namespace reportservice.Service
                     newTag.value.AddRange(tag.value);
                 }
             }
-            return (reportReturn,string.Empty);
+            return (SetColorTags(reportReturn),string.Empty);
         }
 
         public async Task<(Report,string)> GetReportPerDate(int thingId, long startDate, long endDate)
@@ -88,6 +88,8 @@ namespace reportservice.Service
             if(report == null)
                 return (null,"Not found");
 
+            
+
             // foreach(var productionOrderId in productionOrderIds)
             // {
             //     var productionOrder = await _otherAPIService.GetProductionOrderPerId(productionOrderId);
@@ -100,7 +102,7 @@ namespace reportservice.Service
             //         reportReturn = report;
             // }
 
-            reportReturn = report;
+            reportReturn = SetColorTags(report);
 
             return (reportReturn,string.Empty);
         }
@@ -133,8 +135,28 @@ namespace reportservice.Service
                 }
             }
 
-            return (reportReturn,string.Empty);
+            return (SetColorTags(reportReturn),string.Empty);
 
+        }
+
+        private Report SetColorTags(Report report)
+        {
+            if(report == null || report.tags == null)
+                return report;
+
+            foreach(var tag in report.tags)
+            {
+                if(tag.name.ToLower().IndexOf("lsc")>=0 || tag.name.ToLower().IndexOf("lic")>=0)
+                    tag.color="#FFFF00";
+                else if(tag.name.ToLower().IndexOf("lse")>=0 || tag.name.ToLower().IndexOf("lie")>=0)
+                    tag.color="#FF0000";
+                else if(tag.name.ToLower().IndexOf("medição")>=0)
+                    tag.color="#0000FF";
+                else
+                    tag.color="#000000";
+            }
+
+            return report;
         }
 
 
