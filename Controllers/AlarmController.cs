@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,15 +13,21 @@ namespace reportservice.Controllers{
     [Route("")]
     public class AlarmController : Controller{
 
-        private IAlarmService alarmService;
-        public AlarmController(IAlarmService alarmService){
+        private IManagerAlarmListService alarmService;
+        public AlarmController(IManagerAlarmListService alarmService){
             this.alarmService = alarmService;
         }
 
         [HttpGet("teste")]
         [Produces("application/json")]
-        public async Task<IActionResult> GetAlarms(){                                              
-            return Ok(await this.alarmService.getAlarm(13,000000000000000000, 999999999999999999));
+        public async Task<IActionResult> GetAlarms([FromQuery] int thingId, [FromQuery] long startDate, [FromQuery] long endDate){       
+            Console.WriteLine("Entrou no endpoint");
+            Console.WriteLine("");   
+            var (alarm, status) = await this.alarmService.getAlarms(thingId,startDate, endDate);
+            if(status == HttpStatusCode.OK)                                   
+                return Ok(alarm);
+            else
+                return BadRequest();
         }        
     }
 }
