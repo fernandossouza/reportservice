@@ -12,32 +12,28 @@ using Microsoft.Extensions.Options;
 using reportservice.Service;
 using reportservice.Service.Interface;
 
-namespace reportservice
-{
-    public class Startup
-    {
-        public Startup(IConfiguration configuration)
-        {
+namespace reportservice{
+    public class Startup{
+        public Startup(IConfiguration configuration){
             Configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
-        {
+        public void ConfigureServices(IServiceCollection services){
             services.AddMvc();
 
-            services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
-               {
-                   builder.AllowAnyOrigin()
-                          .AllowAnyMethod()
-                          .AllowAnyHeader();
-               }));
-
+            services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>  {
+                    builder.AllowAnyOrigin()
+                            .AllowAnyMethod()
+                            .AllowAnyHeader();
+                })
+            );
+            services.AddTransient<IManagerAlarmListService,ManagerAlarmListService>();
             services.AddTransient<IOtherAPIService,OtherAPIService>();
             services.AddTransient<IReportParameterServices,ReportParameterService>();
-            services.AddTransient<IThingService,ThingService>();
+            services.AddTransient<IThingService,ThingService>();            
             services.AddTransient<IProductionOrderService,ProductionOrderService>();
             services.AddTransient<IRecipeService,RecipeService>();
             services.AddTransient<IReportAnalysisService,ReportAnalysisService>();
