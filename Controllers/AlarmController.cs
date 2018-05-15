@@ -18,12 +18,12 @@ namespace reportservice.Controllers{
             this.alarmService = alarmService;
         }
 
-        [HttpGet("teste")]
+        [HttpGet("api/alarmreport")]
         [Produces("application/json")]
-        public async Task<IActionResult> GetAlarms([FromQuery] int thingId, [FromQuery] long startDate, [FromQuery] long endDate){       
+        public async Task<IActionResult> GetAlarms([FromQuery] int thingId, [FromQuery] long startDate, [FromQuery] long endDate, [FromQuery] int opId){       
             Console.WriteLine("Entrou no endpoint");
             Console.WriteLine("");   
-            var (alarm, status) = await this.alarmService.getAlarms(thingId,startDate, endDate);
+            var (alarm, status) = await this.alarmService.defineGet(opId, thingId,startDate, endDate);
             if(status == HttpStatusCode.OK)                                   
                 return Ok(alarm);
             else
