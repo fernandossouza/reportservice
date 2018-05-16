@@ -29,9 +29,9 @@ namespace reportservice.Controllers {
 
         [HttpGet ("gateway/things/")]
         [Produces ("application/json")]
-        public async Task<IActionResult> GetThings ([FromQuery] int? startat, [FromQuery] int? quantity, [FromQuery] string fieldFilter = null, [FromQuery] string fieldValue = null, [FromQuery] string orderField = null, [FromQuery] string order = null) {
+        public async Task<IActionResult> GetThing ([FromQuery] int? startat, [FromQuery] int? quantity, [FromQuery] string fieldFilter = null, [FromQuery] string fieldValue = null, [FromQuery] string orderField = null, [FromQuery] string order = null) {
 
-            var (thing, resultCode) = await _thingService.getThings (startat, quantity, fieldFilter, fieldValue, orderField, order);
+            var (thing, resultCode) = await _thingService.getThing (startat, quantity, fieldFilter, fieldValue, orderField, order);
             switch (resultCode) {
                 case HttpStatusCode.OK:
                     return Ok (thing);
@@ -41,9 +41,9 @@ namespace reportservice.Controllers {
             return StatusCode (StatusCodes.Status500InternalServerError);
         }
 
-        [HttpGet ("gateway/things/{thingId}")]
+        [HttpGet ("gateway/things/{{id:int}}")]
         [Produces ("application/json")]
-        public async Task<IActionResult> GetThing (int thingId) {
+        public async Task<IActionResult> GetThing (int id) {
 
             var (thing, resultCode) = await _thingService.getThing (thingId);
             switch (resultCode) {
