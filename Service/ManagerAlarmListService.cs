@@ -31,7 +31,6 @@ namespace reportservice.Service{
             client = new HttpClient();
         }
 
-
         public async Task<(RelatorioAlarm, HttpStatusCode)> getAlarms(){            
             try{
                 client.DefaultRequestHeaders.Accept.Clear();
