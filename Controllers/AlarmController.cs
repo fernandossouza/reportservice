@@ -23,8 +23,7 @@ namespace reportservice.Controllers{
         public async Task<IActionResult> GetAlarms([FromQuery] int thingId, [FromQuery] long startDate, [FromQuery] long endDate, [FromQuery] int opId){       
             Console.WriteLine("Entrou no endpoint");
             Console.WriteLine("");   
-            var (relatorio, status) = await this.alarmService.defineGet(opId, thingId,startDate, endDate);
-            Console.WriteLine(relatorio.ToString());
+            var (relatorio, status) = await this.alarmService.defineGet(opId, thingId,startDate, endDate);            
             if(status == HttpStatusCode.OK)                                   
                 return Ok(relatorio);
             else
