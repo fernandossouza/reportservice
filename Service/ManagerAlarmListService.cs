@@ -15,16 +15,24 @@ namespace reportservice.Service{
     public class ManagerAlarmListService : IManagerAlarmListService{
         private readonly IConfiguration configuration;
         private HttpClient client;
-        public int thingId { get; set; }
-        public long startDate { get; set; }
-        public long endDate { get; set; }
+        private int thingId;
+        private long startDate;
+        private long endDate;
+        private List<AlarmFront> alarms = new List<AlarmFront>(); 
+        private List<TabelaFront> tabelas = new List<TabelaFront>();
+        private List<Alarm> listaAlarm;
+        private AlarmFront alarm;   
+        private TabelaFront tabela;
+        private HashSet<string> nomes = new HashSet<string>(); 
+        private RelatorioAlarm relatorio;
+
         public ManagerAlarmListService (IConfiguration configuration){
             this.configuration = configuration;
             client = new HttpClient();
         }
 
 
-        public async Task<(List<AlarmFront>, HttpStatusCode)> getAlarms(){            
+        public async Task<(RelatorioAlarm, HttpStatusCode)> getAlarms(){            
             try{
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));            
@@ -32,27 +40,36 @@ namespace reportservice.Service{
                 UriBuilder builder = new UriBuilder(this.configuration["historianAlarm"]);             
                 Console.WriteLine("Conectando api historianAlarm"+this.configuration["historianAlarm"]);
                 var json = JObject.Parse(await client.GetStringAsync(builder.ToString()+query))["values"].ToString();
-                List<Alarm> listaAlarm  = JsonConvert.DeserializeObject<List<Alarm>>(json);            
-                Console.WriteLine("Conectou retorno = "+ JsonConvert.SerializeObject(listaAlarm));
-                Console.WriteLine("Ordenando lista");
-                listaAlarm = listaAlarm.OrderBy(c => c.alarmDescription).ToList(); AlarmFront alarm;            
-                Console.WriteLine("Ordenou retorno = "+ JsonConvert.SerializeObject(listaAlarm));
-                List<AlarmFront> lista = new List<AlarmFront>(); 
-                var nomes = new HashSet<string>();                                    
-                foreach(Alarm a in listaAlarm)
+                this.listaAlarm  = JsonConvert.DeserializeObject<List<Alarm>>(json);            
+                Console.WriteLine("Conectou o retorno foi = "+ JsonConvert.SerializeObject(listaAlarm));
+                Console.WriteLine("Ordenando lista");                     
+                Console.WriteLine("Ordenou retorno = "+ JsonConvert.SerializeObject(this.listaAlarm));                
+                int i=0;   
+
+                foreach(Alarm a in this.listaAlarm)
                     nomes.Add(a.alarmName);     
-                int i=0;                                                                            
+                                                                                            
                 foreach (string item in nomes){                                                                            
-                    var g = (from t in listaAlarm where t.alarmName == item select t).ToList();                                
-                    var group = g.GroupBy(x=>new DateTime(x.startDate).Date);   
-                    alarm = new AlarmFront(); alarm.data = new List<Dictionary<string, string>>();    
-                    alarm.groupTag = item;  
-                    alarm.thing = thingId.ToString();
+                    var g = (from t in listaAlarm where t.alarmName == item select t).ToList();
+                    g = g.OrderBy(c => c.alarmDescription).ToList();
+                    tabela = new TabelaFront(thingId, item);
+                    tabela.data = new List<Dictionary<string, string>>();
+                    foreach (var s in g){
+                        tabela.data.Add(new Dictionary<string, string>{
+                            ["dateIni"] =  s.startDate.ToString(),
+                            ["dateEnd"] = s.endDate.ToString(),
+                            ["type"] = s.alarmDescription                                               
+                        });
+                    }
+                    tabelas.Add(tabela);
+                    var group = g.GroupBy(x=>new DateTime(x.startDate).Date); 
+                    alarm = new AlarmFront(thingId.ToString(), item);                       
+                    alarm.data = new List<Dictionary<string, string>>();                       
                     Console.WriteLine("Inicio do Loop de grupos por data");
                     foreach(var s in group){                                   
                         Console.WriteLine("Contando alarmes");
                         alarm.data.Add(new Dictionary<string, string>{
-                            ["data"] =  s.First().startDate.ToString(),
+                            ["category"] =  s.First().startDate.ToString(),
                             ["muito alto"] = s.Where(x => x.alarmDescription.ToLower() == "muito alto").Count().ToString(),
                             ["alto"] = s.Where(x => x.alarmDescription.ToLower() == "alto").Count().ToString(),
                             ["baixo"] = s.Where(x => x.alarmDescription.ToLower() == "baixa").Count().ToString(),
@@ -62,9 +79,10 @@ namespace reportservice.Service{
                     }                 
                     i++;
                     Console.WriteLine("Adicionou "+ i + "elemento na lista de dictionary");
-                    lista.Add(alarm);                       
+                    alarms.Add(alarm);                       
                 }   
-                return (lista, HttpStatusCode.OK); 
+                relatorio = new RelatorioAlarm(alarms, tabelas);
+                return (relatorio, HttpStatusCode.OK); 
             }catch(Exception e){
                 Console.WriteLine();Console.WriteLine();
                 Console.Write("Erro : ");
@@ -74,7 +92,7 @@ namespace reportservice.Service{
             }                                      
         }
 
-        public async Task<(List<AlarmFront>, HttpStatusCode)> defineGet(int opId, int thingId, long startDate, long endDate){
+        public async Task<(RelatorioAlarm, HttpStatusCode)> defineGet(int opId, int thingId, long startDate, long endDate){
             this.thingId = thingId;
             if(opId == 0){   
                 this.startDate = startDate;
