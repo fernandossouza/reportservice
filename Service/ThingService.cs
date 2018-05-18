@@ -58,7 +58,7 @@ namespace reportservice.Service {
             Thing returnThing = null;
             client.DefaultRequestHeaders.Accept.Clear ();
             client.DefaultRequestHeaders.Accept.Add (new MediaTypeWithQualityHeaderValue ("application/json"));
-            var builder = new UriBuilder (_configuration["thingServiceEndpoint"] + "/api/things/" + thingId);
+            var builder = new UriBuilder (_configuration["thingServiceEndpoint"]  + thingId);
             string url = builder.ToString ();
             var result = await client.GetAsync (url);
             switch (result.StatusCode) {

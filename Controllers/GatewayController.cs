@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using reportservice.Service.Interface;
+using securityfilter;
 
 namespace reportservice.Controllers {
     [Route ("")]
@@ -29,9 +30,10 @@ namespace reportservice.Controllers {
 
         [HttpGet ("gateway/things/")]
         [Produces ("application/json")]
+        [SecurityFilter ("report__allow_read")]
         public async Task<IActionResult> GetThing ([FromQuery] int? startat, [FromQuery] int? quantity, [FromQuery] string fieldFilter = null, [FromQuery] string fieldValue = null, [FromQuery] string orderField = null, [FromQuery] string order = null) {
 
-            var (thing, resultCode) = await _thingService.getThing (startat, quantity, fieldFilter, fieldValue, orderField, order);
+            var (thing, resultCode) = await _thingService.getThings (startat, quantity, fieldFilter, fieldValue, orderField, order);
             switch (resultCode) {
                 case HttpStatusCode.OK:
                     return Ok (thing);
@@ -41,11 +43,12 @@ namespace reportservice.Controllers {
             return StatusCode (StatusCodes.Status500InternalServerError);
         }
 
-        [HttpGet ("gateway/things/{{id:int}}")]
+        [HttpGet ("gateway/things/{id}")]
         [Produces ("application/json")]
+        [SecurityFilter ("report__allow_read")]
         public async Task<IActionResult> GetThing (int id) {
 
-            var (thing, resultCode) = await _thingService.getThing (thingId);
+            var (thing, resultCode) = await _thingService.getThing (id);
             switch (resultCode) {
                 case HttpStatusCode.OK:
                     return Ok (thing);
@@ -57,6 +60,7 @@ namespace reportservice.Controllers {
 
         [HttpGet ("gateway/productionorder/")]
         [Produces ("application/json")]
+        [SecurityFilter ("report__allow_read")]
         public async Task<IActionResult> GetProductionOrder ([FromQuery] int? startat, [FromQuery] int? quantity, [FromQuery] string fieldFilter = null, [FromQuery] string fieldValue = null, [FromQuery] string orderField = null, [FromQuery] string order = null) {
 
             var (productionOrder, resultCode) = await _productionOrderService.getProductionOrder (startat, quantity, fieldFilter, fieldValue, orderField, order);
@@ -71,6 +75,7 @@ namespace reportservice.Controllers {
 
         [HttpGet ("gateway/recipe/")]
         [Produces ("application/json")]
+        [SecurityFilter ("report__allow_read")]
         public async Task<IActionResult> GetRecipe ([FromQuery] int? startat, [FromQuery] int? quantity, [FromQuery] string fieldFilter = null, [FromQuery] string fieldValue = null, [FromQuery] string orderField = null, [FromQuery] string order = null) {
 
             var (recipe, resultCode) = await _recipeService.getRecipe (startat, quantity, fieldFilter, fieldValue, orderField, order);
