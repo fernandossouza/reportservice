@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
@@ -11,6 +13,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using reportservice.Service;
 using reportservice.Service.Interface;
+using securityfilter.Services;
+using securityfilter.Services.Interfaces;
 
 namespace reportservice {
     public class Startup {
@@ -28,6 +32,15 @@ namespace reportservice {
                     .AllowAnyMethod ()
                     .AllowAnyHeader ();
             }));
+            
+            services.AddSingleton<IConfiguration> (Configuration);
+            services.AddTransient<IEncryptService, EncryptService> ();
+            
+            if (!String.IsNullOrEmpty (Configuration["KeyFolder"]))
+                services.AddDataProtection ()
+                .SetApplicationName ("Lorien")
+                .PersistKeysToFileSystem (new DirectoryInfo (Configuration["KeyFolder"]));
+                
             services.AddTransient<IManagerAlarmListService, ManagerAlarmListService> ();
             services.AddTransient<IOtherAPIService, OtherAPIService> ();
             services.AddTransient<IReportParameterServices, ReportParameterService> ();
