@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using reportservice.Model;
 using reportservice.Service;
 using reportservice.Service.Interface;
+using securityfilter;
 
 namespace reportservice.Controllers{
 
@@ -20,6 +21,7 @@ namespace reportservice.Controllers{
 
         [HttpGet("api/alarmreport")]
         [Produces("application/json")]
+        [SecurityFilter ("report__allow_read")]
         public async Task<IActionResult> GetAlarms([FromQuery] int thingId, [FromQuery] long startDate, [FromQuery] long endDate, [FromQuery] int opId){       
             Console.WriteLine("Entrou no endpoint");
             Console.WriteLine("");   
