@@ -24,7 +24,6 @@ namespace reportservice {
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices (IServiceCollection services) {
 
             services.AddCors (o => o.AddPolicy ("CorsPolicy", builder => {
@@ -48,6 +47,7 @@ namespace reportservice {
             services.AddTransient<IProductionOrderService, ProductionOrderService> ();
             services.AddTransient<IRecipeService, RecipeService> ();
             services.AddTransient<IReportAnalysisService, ReportAnalysisService> ();
+            services.AddTransient<IGenealogyService,GenealogyService>();
             services.AddMvc ();
 
         }
