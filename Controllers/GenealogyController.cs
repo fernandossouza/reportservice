@@ -18,10 +18,10 @@ namespace reportservice.Controllers{
 
         [HttpGet]
         [Produces("application/json")]
-        public async Task<IActionResult> GetGenealogyOp([FromQuery] int startDate, [FromQuery] long endDate){       
-            
-            var (orders, status) = await this.genealogyService.getGenealogyOpAsync(startDate, endDate);
-            //var (relatorio, status) = await this.alarmService.defineGet(opId, thingId,startDate, endDate);                    
+        public async Task<IActionResult> GetGenealogyOp([FromQuery] int startDate, [FromQuery] long endDate, [FromQuery] string op, [FromQuery] string codigo, [FromQuery] string fieldFilter){                   
+            Console.WriteLine("Entrou no controller");
+            var (orders, status) = await this.genealogyService.getGenealogyOpAsync(startDate, endDate, op, codigo, fieldFilter);
+            // var (relatorio, status) = await this.alarmService.defineGet(opId, thingId,startDate, endDate);                    
             return Ok(orders);            
         }  
     }
