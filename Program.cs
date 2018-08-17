@@ -19,7 +19,7 @@ namespace reportservice
 
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-            .UseUrls ("http://*:5007")
+            //.UseUrls ("http://*:500")
                 .UseStartup<Startup>()
                 .Build();
     }
