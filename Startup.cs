@@ -24,31 +24,23 @@ namespace reportservice {
 
         public IConfiguration Configuration { get; }
 
-        public void ConfigureServices (IServiceCollection services) {
+        // This method gets called by the runtime. Use this method to add services to the container.
+        public void ConfigureServices(IServiceCollection services){
+            services.AddMvc();
 
-            services.AddCors (o => o.AddPolicy ("CorsPolicy", builder => {
-                builder.AllowAnyOrigin ()
-                    .AllowAnyMethod ()
-                    .AllowAnyHeader ();
-            }));
-            
-            services.AddSingleton<IConfiguration> (Configuration);
-            services.AddTransient<IEncryptService, EncryptService> ();
-            
-            if (!String.IsNullOrEmpty (Configuration["KeyFolder"]))
-                services.AddDataProtection ()
-                .SetApplicationName ("Lorien")
-                .PersistKeysToFileSystem (new DirectoryInfo (Configuration["KeyFolder"]));
-                
-            services.AddTransient<IManagerAlarmListService, ManagerAlarmListService> ();
-            services.AddTransient<IOtherAPIService, OtherAPIService> ();
-            services.AddTransient<IReportParameterServices, ReportParameterService> ();
-            services.AddTransient<IThingService, ThingService> ();
-            services.AddTransient<IProductionOrderService, ProductionOrderService> ();
-            services.AddTransient<IRecipeService, RecipeService> ();
-            services.AddTransient<IReportAnalysisService, ReportAnalysisService> ();
-            services.AddTransient<IGenealogyService,GenealogyService>();
-            services.AddMvc ();
+            services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>  {
+                    builder.AllowAnyOrigin()
+                            .AllowAnyMethod()
+                            .AllowAnyHeader();
+                })
+            );
+            services.AddTransient<IManagerAlarmListService,ManagerAlarmListService>();
+            services.AddTransient<IOtherAPIService,OtherAPIService>();
+            services.AddTransient<IReportParameterServices,ReportParameterService>();
+            services.AddTransient<IThingService,ThingService>();            
+            services.AddTransient<IProductionOrderService,ProductionOrderService>();
+            services.AddTransient<IRecipeService,RecipeService>();
+            services.AddTransient<IReportAnalysisService,ReportAnalysisService>();
 
         }
 
