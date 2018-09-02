@@ -25,9 +25,12 @@ namespace reportservice.Service{
         private TabelaFront tabela;
         private HashSet<string> nomes = new HashSet<string>(); 
         private RelatorioAlarm relatorio;
+        private readonly IOtherAPIService _otherAPIService;
 
-        public ManagerAlarmListService (IConfiguration configuration){
+
+        public ManagerAlarmListService (IConfiguration configuration,IOtherAPIService otherAPIService){
             this.configuration = configuration;
+            _otherAPIService = otherAPIService;
             client = new HttpClient();
         }
 
@@ -43,7 +46,9 @@ namespace reportservice.Service{
                 Console.WriteLine("Conectou o retorno foi = "+ JsonConvert.SerializeObject(listaAlarm));
                 Console.WriteLine("Ordenando lista");                     
                 Console.WriteLine("Ordenou retorno = "+ JsonConvert.SerializeObject(this.listaAlarm));                
-                int i=0;   
+                int i=0;
+
+                var reportBigTable = await _otherAPIService.GetReportAPI(this.thingId,this.startDate,this.endDate);   
 
                 foreach(Alarm a in this.listaAlarm)
                     nomes.Add(a.alarmName);     
@@ -54,10 +59,38 @@ namespace reportservice.Service{
                     tabela = new TabelaFront(thingId, item);
                     tabela.data = new List<Dictionary<string, string>>();
                     foreach (var s in g){
+                        var rolos = reportBigTable.tags.Where(x=>x.name.ToLower() == "rolo");
+                        string rolo = "";
+                        if(rolos != null && rolos.Count() > 0)
+                        {
+                            var roloIndex = rolos.FirstOrDefault().timestamp.IndexOf(rolos.FirstOrDefault().timestamp.FirstOrDefault(a=> a >= s.startDate) );
+                            if(roloIndex <0)
+                                roloIndex = rolos.FirstOrDefault().timestamp.IndexOf(rolos.FirstOrDefault().timestamp.OrderByDescending(a=>a).FirstOrDefault(a=> a <= s.startDate) );
+
+                            if(roloIndex >=0)
+                                rolo = rolos.FirstOrDefault().value.ElementAt(roloIndex);
+
+                        }
+
+                        var ordens = reportBigTable.tags.Where(x=>x.name.ToLower() == "ordem");
+                        string ordem = "";
+                        if(rolos != null && rolos.Count() > 0)
+                        {
+                            var ordemIndex = ordens.FirstOrDefault().timestamp.IndexOf(ordens.FirstOrDefault().timestamp.FirstOrDefault(a=> a >= s.startDate) );
+                            if(ordemIndex <0)
+                                ordemIndex = ordens.FirstOrDefault().timestamp.IndexOf(ordens.FirstOrDefault().timestamp.OrderByDescending(a=>a).FirstOrDefault(a=> a <= s.startDate) );
+
+                            if(ordemIndex >=0)
+                                ordem = ordens.FirstOrDefault().value.ElementAt(ordemIndex);
+
+                        }
+
                         tabela.data.Add(new Dictionary<string, string>{
                             ["dateIni"] =  s.startDate.ToString(),
                             ["dateEnd"] = s.endDate.ToString(),
-                            ["type"] = s.alarmDescription                                               
+                            ["type"] = s.alarmDescription,
+                            ["Ordem"] = ordem,
+                            ["rolo"] = rolo                                               
                         });
                     }
                     tabelas.Add(tabela);
